@@ -1,4 +1,4 @@
-import {getRandomPhotos} from './data';
+import {getRandomPhotos} from './data.js';
 
 getRandomPhotos();
 //console.log(getRandomPhotos());

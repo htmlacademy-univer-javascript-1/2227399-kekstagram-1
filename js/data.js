@@ -1,4 +1,4 @@
-import {getRandomPositiveInteger, getRandomPositiveIntegerArray, checkStringLength} from './utils';
+import {getRandomPositiveInteger, counterIDsContainer, checkStringLength, shuffle} from './utils.js';
 
 const DESCRIPTIONS = [
   'Я с друзьями',
@@ -27,49 +27,53 @@ const NAMES = [
 
 const PHOTOS_COUNT = 25;
 
-function getRandomPhotos() {
-  const photosIDs = getRandomPositiveIntegerArray(1, PHOTOS_COUNT);
-  const photosURLIDs = getRandomPositiveIntegerArray(1, PHOTOS_COUNT);
+const randomCommentMessagesContainer = function() {
+  const MAX_COMMENT_LENGTH = 20;
+  const shuffleMESSAGES = shuffle(MESSAGES);
+  let i = 0;
+  return function () {
+    let message = shuffleMESSAGES[i++];
+    if (!checkStringLength(message, MAX_COMMENT_LENGTH)) {
+      message = message.substring(0, MAX_COMMENT_LENGTH);
+    }
+    return message;
+  };
+};
 
-  const photosArr = [];
-  for (let i = 0; i < PHOTOS_COUNT; i++) {
-    photosArr[i] = {
-      id: photosIDs[i],
-      url: `photos/${photosURLIDs[i]}.jpg`,
-      description: DESCRIPTIONS[getRandomPositiveInteger(0, DESCRIPTIONS.length - 1)],
-      comments: getRandomComments()
-    };
-  }
-
-  return photosArr;
-}
-
-function getRandomComments() {
+const createRandomComments = function() {
   const commentsCount = getRandomPositiveInteger(0, NAMES.length);
-  const commentsIDs = getRandomPositiveIntegerArray(1, NAMES.length);
+  const commentsID = counterIDsContainer();
+  const commentMessages = randomCommentMessagesContainer();
 
   const commentsArr = [];
   for (let i = 0; i < commentsCount; i++) {
     const avatarID = getRandomPositiveInteger(1, NAMES.length);
     commentsArr[i] = {
-      id: commentsIDs[i],
+      id: commentsID(),
       avatar: `img/avatar-${avatarID}.svg`,
-      message: createCommentMessage(),
+      message: commentMessages(),
       name: NAMES[avatarID - 1]
     };
   }
 
   return commentsArr;
-}
+};
 
-function createCommentMessage() {
-  const MAX_COMMENT_LENGTH = 20;
-  let message = MESSAGES[getRandomPositiveInteger(0, MESSAGES.length - 1)];
-  if (!checkStringLength(MESSAGES[getRandomPositiveInteger(0, MESSAGES.length - 1)], MAX_COMMENT_LENGTH)) {
-    message = message.substring(0, MAX_COMMENT_LENGTH);
+const getRandomPhotos = function() {
+  const photosID = counterIDsContainer();
+  const photosURLID = counterIDsContainer();
+
+  const photosArr = [];
+  for (let i = 0; i < PHOTOS_COUNT; i++) {
+    photosArr[i] = {
+      id: photosID(),
+      url: `photos/${photosURLID()}.jpg`,
+      description: DESCRIPTIONS[getRandomPositiveInteger(0, DESCRIPTIONS.length - 1)],
+      comments: createRandomComments()
+    };
   }
 
-  return message;
-}
+  return photosArr;
+};
 
 export {getRandomPhotos};
