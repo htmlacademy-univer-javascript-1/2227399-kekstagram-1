@@ -1,4 +1,4 @@
-import {getRandomPositiveInteger, counterIDsContainer, checkStringLength, shuffle} from './utils.js';
+import {getRandomPositiveInteger, counterContainer, checkStringLength, shuffle} from './utils.js';
 
 const DESCRIPTIONS = [
   'Я с друзьями',
@@ -42,7 +42,7 @@ const randomCommentMessagesContainer = function() {
 
 const createRandomComments = function() {
   const commentsCount = getRandomPositiveInteger(0, NAMES.length);
-  const commentsID = counterIDsContainer();
+  const commentsID = counterContainer();
   const commentMessages = randomCommentMessagesContainer();
 
   const commentsArr = [];
@@ -60,8 +60,8 @@ const createRandomComments = function() {
 };
 
 const getRandomPhotos = function() {
-  const photosID = counterIDsContainer();
-  const photosURLID = counterIDsContainer();
+  const photosID = counterContainer(1);
+  const photosURLID = counterContainer(1);
 
   const photosArr = [];
   for (let i = 0; i < PHOTOS_COUNT; i++) {
@@ -69,6 +69,7 @@ const getRandomPhotos = function() {
       id: photosID(),
       url: `photos/${photosURLID()}.jpg`,
       description: DESCRIPTIONS[getRandomPositiveInteger(0, DESCRIPTIONS.length - 1)],
+      likes: getRandomPositiveInteger(15, 200),
       comments: createRandomComments()
     };
   }

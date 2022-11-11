@@ -1,6 +1,4 @@
-function checkStringLength(string, maxLen) {
-  return string.length <= maxLen;
-}
+const checkStringLength = (string, maxLen) => string.length <= maxLen;
 
 // Функция взята из интернета и доработана
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -11,11 +9,9 @@ const getRandomPositiveInteger = function(a, b) {
   return Math.floor(result);
 };
 
-const counterIDsContainer = function () {
-  let i = 0;
-  return function () {
-    return i++;
-  };
+const counterContainer = function (startCount = 0) {
+  let i = startCount;
+  return () => i++;
 };
 
 // Функция взята из интернета и доработана
@@ -24,4 +20,4 @@ const shuffle = function(arr) {
   return arr.sort(() => Math.random() - 0.5);
 };
 
-export {getRandomPositiveInteger, counterIDsContainer, shuffle, checkStringLength};
+export {getRandomPositiveInteger, counterContainer, shuffle, checkStringLength};
