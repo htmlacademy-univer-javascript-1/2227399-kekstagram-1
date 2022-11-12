@@ -26,9 +26,9 @@ const NAMES = [
 ];
 
 const PHOTOS_COUNT = 25;
+const MAX_COMMENT_LENGTH = 120;
 
 const randomCommentMessagesContainer = function() {
-  const MAX_COMMENT_LENGTH = 20;
   const shuffleMESSAGES = shuffle(MESSAGES);
   let i = 0;
   return function () {
