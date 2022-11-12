@@ -1,4 +1,3 @@
-import {getRandomPhotos} from './data.js';
+import {renderPictures} from './pictures-mini.js';
 
-getRandomPhotos();
-//console.log(getRandomPhotos());
+renderPictures();
