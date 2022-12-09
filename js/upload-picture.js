@@ -15,12 +15,12 @@ const commentInput = form.querySelector('.text__description');
 const MAX_HASHTAGS_NUMBER = 5;
 const MAX_COMMENT_LENGTH = 140;
 const pristine = new Pristine(form, {
-  classTo: 'text',
-  errorClass: 'text-invalid',
-  successClass: 'text-valid',
-  errorTextParent: 'text',
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'text--invalid',
+  successClass: 'text--valid',
+  errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
-  errorTextClass: 'text-invalid__error'
+  errorTextClass: 'text--invalid__error'
 }, false);
 
 //functions
