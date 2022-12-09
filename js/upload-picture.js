@@ -37,11 +37,11 @@ const closeOverlayImage = () => {
   pristine.destroy();
 };
 
-const onOverlayImageESCKeydown = (evt) => {
+function onOverlayImageESCKeydown(evt) {
   if (isESCKey(evt.key) && evt.target !== hashtagInput && evt.target !== commentInput) {
     closeOverlayImage();
   }
-};
+}
 
 uploadImage.addEventListener('change', () => {
   document.addEventListener('keydown', onOverlayImageESCKeydown);
