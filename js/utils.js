@@ -20,4 +20,7 @@ const shuffle = function(arr) {
   return arr.sort(() => Math.random() - 0.5);
 };
 
-export {getRandomPositiveInteger, counterContainer, shuffle, checkStringLength};
+const ESCAPE_KEYCODE = 'Escape';
+const isESCKey = (keyCode) => keyCode === ESCAPE_KEYCODE;
+
+export {getRandomPositiveInteger, counterContainer, shuffle, checkStringLength, isESCKey};
