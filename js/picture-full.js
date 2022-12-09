@@ -1,3 +1,5 @@
+import {isESCKey} from './utils.js';
+
 const bigPicture = document.querySelector('.big-picture');
 
 const commentTemplate = document.querySelector('#comment').content.querySelector('.social__comment');
@@ -5,11 +7,10 @@ const commentsContainer = bigPicture.querySelector('.social__comments');
 const commentListFragment = document.createDocumentFragment();
 
 const closeFullScreenButton = bigPicture.querySelector('.big-picture__cancel');
-const ESCAPE_KEYCODE = 'Escape';
 
 const closeBigPictureListeners = () => {
   document.addEventListener('keydown', (evt) => {
-    if (evt.code === ESCAPE_KEYCODE) {
+    if (isESCKey(evt.code)) {
       bigPicture.classList.add('hidden');
       document.body.classList.remove('modal-open');
     }
