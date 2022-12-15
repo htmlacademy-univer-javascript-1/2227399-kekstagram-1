@@ -11,9 +11,26 @@ const hashtagInput = form.querySelector('.text__hashtags');
 const commentInput = form.querySelector('.text__description');
 //const submitButton = form.querySelector('.img-upload__submit');
 
-//constants
+// zoom querySelectors
+const zoomOutButton = overlayImage.querySelector('.scale__control--smaller');
+const zoomInButton = overlayImage.querySelector('.scale__control--bigger');
+const scaleControl = overlayImage.querySelector('.scale__control--value');
+
+const previewImage = overlayImage.querySelector('.img-upload__preview');
+
+// effects querySelectors
+const effects = overlayImage.querySelector('.effects__list');
+const slider = overlayImage.querySelector('.effect-level__slider');
+const effectLevelInput = overlayImage.querySelector('.effect-level__value');
+const sliderField = overlayImage.querySelector('.img-upload__effect-level');
+
+// constants
 const MAX_HASHTAGS_NUMBER = 5;
 const MAX_COMMENT_LENGTH = 140;
+const ZOOM_STEP = 25;
+const ZOOM_MIN = 25;
+const ZOOM_MAX = 100;
+
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorClass: 'text--invalid',
@@ -23,13 +40,107 @@ const pristine = new Pristine(form, {
   errorTextClass: 'text--invalid__error'
 }, false);
 
-//functions
+const EFFECTS = {
+  chrome: {
+    min: 0,
+    max: 1,
+    step: 0.1,
+    style: 'grayscale',
+    unit: '',
+  },
+  marvin: {
+    min: 0,
+    max: 100,
+    step: 1,
+    style: 'invert',
+    unit: '%',
+  },
+  sepia: {
+    min: 0,
+    max: 1,
+    step: 0.1,
+    style: 'sepia',
+    unit: '',
+  },
+  phobos: {
+    min: 0,
+    max: 3,
+    step: 0.1,
+    style: 'blur',
+    unit: 'px',
+  },
+  heat: {
+    min: 1,
+    max: 3,
+    step: 0.1,
+    style: 'brightness',
+    unit: '',
+  }
+};
+
+// effects functions
+
+let selectedEffect;
+const applyEffectOnImage = (evt) => {
+  selectedEffect = evt.target.value;
+  const effect = EFFECTS[selectedEffect];
+  if (!effect) {
+    sliderField.classList.add('hidden');
+    return;
+  }
+  sliderField.classList.remove('hidden');
+
+  const {min, max, step} = effect;
+
+  slider.noUiSlider.updateOptions({
+    range: {min, max},
+    start: max,
+    step,
+  });
+  const effectsPreview = evt.target.parentNode.querySelector('.effects__preview');
+  previewImage.classList.add(effectsPreview.getAttribute('class').split('  ')[1]);
+};
+
+const onEffectsChangeListener = (evt) => {
+  applyEffectOnImage(evt);
+};
+
+const changeEffectIntensity = () => {
+  const sliderValue = slider.noUiSlider.get();
+  effectLevelInput.value = sliderValue;
+  const effect = EFFECTS[selectedEffect];
+  previewImage.style.filter = effect ? `${effect.style}(${sliderValue}${effect.unit})` : '';
+};
+
+// zoom functions
+
+let scaleValue = parseInt(scaleControl.value.replace('%', ''), 10);
+const onZoomInButtonClickListener = () => {
+  scaleValue += ZOOM_STEP;
+  scaleValue = (scaleValue > ZOOM_MAX) ? ZOOM_MAX : scaleValue;
+  scaleControl.value = `${ scaleValue }%`;
+  previewImage.style.transform = `scale(${ scaleValue / 100 })`;
+};
+
+const onZoomOutButtonClickListener = () => {
+  scaleValue -= ZOOM_STEP;
+  scaleValue = (scaleValue < ZOOM_MIN) ? ZOOM_MIN : scaleValue;
+  scaleControl.value = `${ scaleValue }%`;
+  previewImage.style.transform = `scale(${ scaleValue / 100 })`;
+};
+
+// main functions
 
 const closeOverlayImage = () => {
   uploadImage.value = '';
   form.reset();
 
   document.removeEventListener('keydown', onOverlayImageESCKeydown);
+  zoomOutButton.removeEventListener('click', onZoomOutButtonClickListener);
+  zoomInButton.removeEventListener('click', onZoomInButtonClickListener);
+
+  effects.removeEventListener('change', onEffectsChangeListener);
+  slider.noUiSlider.destroy();
 
   overlayImage.classList.add('hidden');
   document.body.classList.remove('modal-open');
@@ -46,6 +157,28 @@ function onOverlayImageESCKeydown(evt) {
 uploadImage.addEventListener('change', () => {
   document.addEventListener('keydown', onOverlayImageESCKeydown);
   closeButton.addEventListener('click', closeOverlayImage, {once: true});
+
+  scaleValue = 100;
+  scaleControl.value = '100%';
+  previewImage.style.transform = 'scale(1)';
+  zoomOutButton.addEventListener('click', onZoomOutButtonClickListener);
+  zoomInButton.addEventListener('click', onZoomInButtonClickListener);
+
+  selectedEffect = 'effect-none';
+  previewImage.classList.add('effects__preview--none');
+  effects.addEventListener('change', onEffectsChangeListener);
+
+  sliderField.classList.add('hidden');
+  noUiSlider.create(slider, {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100
+  });
+  slider.noUiSlider.on('update', () => {
+    changeEffectIntensity();
+  });
 
   document.body.classList.add('modal-open');
   overlayImage.classList.remove('hidden');
