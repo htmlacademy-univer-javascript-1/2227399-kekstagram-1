@@ -94,6 +94,7 @@ const applyEffectOnImage = (evt) => {
   const effect = EFFECTS[selectedEffect];
   if (!effect) {
     sliderField.classList.add('hidden');
+    previewImage.style.filter = 'none';
     return;
   }
   sliderField.classList.remove('hidden');
