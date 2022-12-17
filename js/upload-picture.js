@@ -300,6 +300,7 @@ pristine.addValidator(
 // pristine form submit event listener
 
 form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
   const isValid = pristine.validate();
 
   if (isValid) {
