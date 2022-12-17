@@ -1,6 +1,8 @@
 import {checkStringLength, isESCKey} from './utils.js';
+import {sendData} from './client-api.js';
 
 // global querySelectors
+const documentBody = document.querySelector('body');
 const uploadImage = document.querySelector('#upload-file');
 const overlayImage = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('#upload-cancel');
@@ -9,7 +11,7 @@ const closeButton = document.querySelector('#upload-cancel');
 const form = document.querySelector('.img-upload__form');
 const hashtagInput = form.querySelector('.text__hashtags');
 const commentInput = form.querySelector('.text__description');
-//const submitButton = form.querySelector('.img-upload__submit');
+const submitButton = form.querySelector('.img-upload__submit');
 
 // zoom querySelectors
 const zoomOutButton = overlayImage.querySelector('.scale__control--smaller');
@@ -23,6 +25,12 @@ const effects = overlayImage.querySelector('.effects__list');
 const slider = overlayImage.querySelector('.effect-level__slider');
 const effectLevelInput = overlayImage.querySelector('.effect-level__value');
 const sliderField = overlayImage.querySelector('.img-upload__effect-level');
+
+// send image to server querySelectors
+const successfulSubmission = document.querySelector('#success').content.querySelector('.success');
+const errorSubmission = document.querySelector('#error').content.querySelector('.error');
+const successButton = successfulSubmission.querySelector('.success__button');
+const errorButton = errorSubmission.querySelector('.error__button');
 
 // constants
 const MAX_HASHTAGS_NUMBER = 5;
@@ -174,7 +182,8 @@ uploadImage.addEventListener('change', () => {
       min: 0,
       max: 100,
     },
-    start: 100
+    start: 100,
+    connect: 'lower'
   });
   slider.noUiSlider.on('update', () => {
     changeEffectIntensity();
@@ -183,6 +192,50 @@ uploadImage.addEventListener('change', () => {
   document.body.classList.add('modal-open');
   overlayImage.classList.remove('hidden');
 });
+
+const disableSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикуем...';
+};
+
+const enableSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const onCloseSuccessSendMsgClickListener = (evt) => {
+  if (evt.target === successfulSubmission) {
+    closeSendMessages();
+  }
+};
+
+const onCloseErrorSendMsgClickListener = (evt) => {
+  if (evt.target === errorSubmission) {
+    closeSendMessages();
+  }
+};
+
+const onErrorSendMsgEscKeydownListener = (evt) => {
+  if (isESCKey(evt.key)) {
+    closeSendMessages();
+  }
+};
+
+function closeSendMessages() {
+  if (documentBody.contains(successfulSubmission)) {
+    documentBody.removeChild(successfulSubmission);
+  }
+  if (documentBody.contains(errorSubmission)) {
+    overlayImage.classList.remove('hidden');
+    documentBody.removeChild(errorSubmission);
+  }
+
+  document.removeEventListener('keydown', onErrorSendMsgEscKeydownListener);
+  document.removeEventListener('click', onCloseSuccessSendMsgClickListener);
+  document.removeEventListener('click', onCloseErrorSendMsgClickListener);
+  successButton.removeEventListener('click', closeSendMessages);
+  errorButton.removeEventListener('click', closeSendMessages);
+}
 
 //validation
 
@@ -247,7 +300,28 @@ pristine.addValidator(
 
 form.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
-  if (!isValid) {
-    evt.preventDefault();
+
+  if (isValid) {
+    disableSubmitButton();
+    sendData(
+      () => {
+        closeOverlayImage();
+        enableSubmitButton();
+        successButton.addEventListener('click', closeSendMessages);
+        document.addEventListener('keydown', onErrorSendMsgEscKeydownListener);
+        document.addEventListener('click', onCloseSuccessSendMsgClickListener);
+        documentBody.appendChild(successfulSubmission);
+      },
+      () => {
+        overlayImage.classList.add('hidden');
+        enableSubmitButton();
+        errorButton.addEventListener('click', closeSendMessages);
+        document.addEventListener('keydown', onErrorSendMsgEscKeydownListener);
+        document.addEventListener('click', onCloseErrorSendMsgClickListener);
+        documentBody.appendChild(errorSubmission);
+      },
+      new FormData(evt.target),
+    );
   }
+
 });
