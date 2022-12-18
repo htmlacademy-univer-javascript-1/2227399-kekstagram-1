@@ -1,5 +1,8 @@
+const GET_SERVER_ADDRESS = 'https://26.javascript.pages.academy/kekstagram/data';
+const SEND_SERVER_ADDRESS = 'https://26.javascript.pages.academy/kekstagram';
+
 const getData = (onSuccess, onFail) => {
-  fetch('https://26.javascript.pages.academy/kekstagram/data')
+  fetch(GET_SERVER_ADDRESS)
     .then((response) => {
       if (response.ok) {
         response.json().then((posts) => {
@@ -16,7 +19,7 @@ const getData = (onSuccess, onFail) => {
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://26.javascript.pages.academy/kekstagram',
+    SEND_SERVER_ADDRESS,
     {
       method: 'POST',
       body,
