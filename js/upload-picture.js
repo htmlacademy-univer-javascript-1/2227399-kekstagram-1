@@ -1,5 +1,6 @@
 import {checkStringLength, isESCKey} from './utils.js';
 import {sendData} from './client-api.js';
+import {PRISTINE_SETTINGS, MAX_COMMENT_LENGTH, MAX_HASHTAGS_NUMBER, ZOOM_STEP, ZOOM_MIN, ZOOM_MAX, EFFECTS} from './data.js';
 
 // global querySelectors
 const documentBody = document.querySelector('body');
@@ -32,59 +33,7 @@ const errorSubmission = document.querySelector('#error').content.querySelector('
 const successButton = successfulSubmission.querySelector('.success__button');
 const errorButton = errorSubmission.querySelector('.error__button');
 
-// constants
-const MAX_HASHTAGS_NUMBER = 5;
-const MAX_COMMENT_LENGTH = 140;
-const ZOOM_STEP = 25;
-const ZOOM_MIN = 25;
-const ZOOM_MAX = 100;
-
-const pristine = new Pristine(form, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'text--invalid',
-  successClass: 'text--valid',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
-  errorTextClass: 'text--invalid__error'
-}, false);
-
-const EFFECTS = {
-  chrome: {
-    min: 0,
-    max: 1,
-    step: 0.1,
-    style: 'grayscale',
-    unit: '',
-  },
-  marvin: {
-    min: 0,
-    max: 100,
-    step: 1,
-    style: 'invert',
-    unit: '%',
-  },
-  sepia: {
-    min: 0,
-    max: 1,
-    step: 0.1,
-    style: 'sepia',
-    unit: '',
-  },
-  phobos: {
-    min: 0,
-    max: 3,
-    step: 0.1,
-    style: 'blur',
-    unit: 'px',
-  },
-  heat: {
-    min: 1,
-    max: 3,
-    step: 0.1,
-    style: 'brightness',
-    unit: '',
-  }
-};
+const pristine = new Pristine(form, PRISTINE_SETTINGS, false);
 
 // effects functions
 

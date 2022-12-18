@@ -1,5 +1,6 @@
 import {initialRenderPictures} from './pictures-mini.js';
 import './upload-picture.js';
+import './input-file.js';
 import {getData} from './client-api.js';
 import {showErrorAlert} from './utils.js';
 

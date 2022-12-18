@@ -1,9 +1,6 @@
 import {showBigPicture} from './picture-full.js';
 import {shuffle} from './utils.js';
-
-// constants
-const DEBOUNCE_DELAY = 500;
-const NUMBER_OF_PICTURES_FOR_RANDOM_FILTER = 10;
+import {DEBOUNCE_DELAY, NUMBER_OF_PICTURES_FOR_RANDOM_FILTER} from './data.js';
 
 // pictures query selectors
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');

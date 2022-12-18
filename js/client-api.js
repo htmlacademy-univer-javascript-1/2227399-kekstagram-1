@@ -1,5 +1,4 @@
-const GET_SERVER_ADDRESS = 'https://26.javascript.pages.academy/kekstagram/data';
-const SEND_SERVER_ADDRESS = 'https://26.javascript.pages.academy/kekstagram';
+import {GET_SERVER_ADDRESS, SEND_SERVER_ADDRESS} from './data.js';
 
 const getData = (onSuccess, onFail) => {
   fetch(GET_SERVER_ADDRESS)
